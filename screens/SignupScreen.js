@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Image, TouchableHighlight } from 'react-native';
 
 import AppLoading from 'expo-app-loading';
@@ -8,11 +8,14 @@ import { Lato_400Regular, Lato_700Bold_Italic, Lato_700Bold } from '@expo-google
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
+import {AuthContext} from '../navigation/AuthProvider';
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
+
+    const {register} = useContext(AuthContext);
 
     let [fontsLoaded, error] = useFonts ({
       Lato_400Regular,
@@ -55,8 +58,8 @@ const LoginScreen = ({navigation}) => {
         />
 
         <FormButton
-          buttonTitle="Sign In"
-          onPress={() => alert("Signup clicked!")}
+          buttonTitle="Sign Up"
+          onPress={() => register(email, password)}
         />
 
         <View style={styles.textPrivate}>
