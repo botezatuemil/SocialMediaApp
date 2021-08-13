@@ -16,10 +16,10 @@ const Routes = () => {
         if(initializing) setInitializing(false);
     }
 
-    useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber;
-    }, []);
+    // useEffect(() => {
+    //     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    //     return subscriber;
+    // }, []);
 
     if (initializing) return null;
 
