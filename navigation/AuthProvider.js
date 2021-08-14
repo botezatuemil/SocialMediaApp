@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 
-import {auth} from '../firebase';
+import {auth, provider} from '../firebase';
 
 import { LogBox } from 'react-native';
 
@@ -35,6 +35,11 @@ export const AuthProvider = ({children}) => {
                     } catch(e) {
                         console.log(e);
                     }
+                },
+                signinWithGoogle: async () => {
+                    
+                    await auth.signInWithPopup(provider).catch((error) => alert(error.message));
+                    
                 }
             }}
         >

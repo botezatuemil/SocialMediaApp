@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, Image, Platform } from 'react-native';
 
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
@@ -15,6 +15,7 @@ const LoginScreen = ({navigation}) => {
     const [password, setPassword] = useState();
 
     const {login} = useContext(AuthContext);
+    const {signinWithGoogle} = useContext(AuthContext);
 
     let [fontsLoaded, error] = useFonts ({
       Lato_400Regular,
@@ -61,21 +62,25 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.navButtonText}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        <SocialButton
-          buttonTitle="Sign in with Facebook"
-          btnType="facebook"
-          color="#4867aa"
-          backgroundColor="#e6eaf4"
-          onPress={() => {}}
-        />
+        {Platform.OS == 'android' ? (
+        <View>
+          <SocialButton
+            buttonTitle="Sign in with Facebook"
+            btnType="facebook"
+            color="#4867aa"
+            backgroundColor="#e6eaf4"
+            onPress={() => {}}
+          />
 
-        <SocialButton
-          buttonTitle="Sign in with Google"
-          btnType="google"
-          color="#de4d41"
-          backgroundColor="#f5e7ea"
-          onPress={() => {}}
-        />
+          <SocialButton
+            buttonTitle="Sign in with Google"
+            btnType="google"
+            color="#de4d41"
+            backgroundColor="#f5e7ea"
+            onPress={() => signinWithGoogle()}
+          />
+        </View>
+        ) : null}
 
         <TouchableOpacity style={styles.forgotButton} onPress={() => {navigation.navigate('Signup')}}>
           <Text style={styles.navButtonText}>Don't have an account? Create here</Text>
