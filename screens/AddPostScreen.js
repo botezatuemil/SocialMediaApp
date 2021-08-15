@@ -41,47 +41,25 @@ const AddPostScreen = () => {
         }
     
         setSelectedImage({ localUri: pickerResult.uri });
+    } 
+    
+    const submitPost = async () => {
+        const imageUrl = await uploadImage();
+        console.log('Image URL: ', imageUrl);
     }
-    
-    const submitPost = async() => {
-        // const blob = await new Promise((resolve, reject) => {
-        //     const xhr = new XMLHttpRequest();
-        //     xhr.onload = function() {
-        //         resolve(xhr.response);
-        //     };
-        //     xhr.onerror = function() {
-        //         reject(new TypeError("Network request failed"));
-        //     };
-        //     xhr.responseType = 'blob';
-        //     xhr.open('GET', uri, true);
-        //     xhr.send(null);
-        // });
-       
 
-        const uploadUri = selectedImage.localUri;
-        let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
-
-        setUploading(true)
-
-        try {
-            await app.storage().ref(filename).put(uploadUri)
-            setUploading(false);
-            Alert.alert();
-        } catch(e) {
-            console.log(e)
-        }
-        setSelectedImage(null);
-    }  
-    
     const uploadImage = async() => {
         const response = await fetch(selectedImage.localUri)
         const blob = await response.blob();
-        var ref = app.storage().ref().child(new Date().toISOString());
+        //var ref = app.storage().ref().child(new Date().toISOString());
+
+        var filename = new Date().toISOString();
 
         setUploading(true);
         setTransferred(0);
 
-        const task = ref.put(blob);
+        const storageRef = app.storage().ref(`photos/${filename}`)
+        const task = storageRef.put(blob);
 
         //Set transferred State
         task.on('state_changed', taskSnapshot => {
@@ -94,12 +72,16 @@ const AddPostScreen = () => {
 
         try {
             await task;
+            const url = await storageRef.getDownloadURL();
             setUploading(false);
+            setSelectedImage(null);
             Alert.alert("Uploaded successfully");
+            return url;
         } catch(e) {
-            console.log(e)
+            console.log(e);
+            return null;
         }
-        setSelectedImage(null); 
+       
         
     }
 
@@ -123,7 +105,7 @@ const AddPostScreen = () => {
                             <ActivityIndicator size="large" color="#0000ff"/>
                         </StatusWrapper>
                     ) : (
-                        <SubmitBtn onPress={uploadImage}>
+                        <SubmitBtn onPress={submitPost}>
                             <SubmitBtnText>Post</SubmitBtnText>
                         </SubmitBtn>
                     )}
