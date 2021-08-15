@@ -154,6 +154,8 @@
     <orderEntry type="module" module-name="SocialMediaApp.unimodules-app-loader" />
     <orderEntry type="module" module-name="SocialMediaApp.unimodules-task-manager-interface" />
     <orderEntry type="module" module-name="SocialMediaApp.react-native-async-storage_async-storage" />
+    <orderEntry type="module" module-name="SocialMediaApp.react-native-community_google-signin" />
+    <orderEntry type="module" module-name="SocialMediaApp.react-native-google-signin_google-signin" />
     <orderEntry type="module" module-name="SocialMediaApp.react-native-gesture-handler" />
     <orderEntry type="module" module-name="SocialMediaApp.react-native-screens" />
     <orderEntry type="module" module-name="SocialMediaApp.react-native-vector-icons" />

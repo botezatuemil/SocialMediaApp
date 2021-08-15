@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -57,6 +57,27 @@ const NavigateStack = ({navigation}) => {
             <Stack.Screen
                 name="AddPostScreen"
                 component={AddPostScreen}
+                options={{
+                    title: '',
+                    headerTitleAlign: 'center',
+                    headerStyle: {
+                      backgroundColor: '#2e64e515',
+                      shadowColor: '#2e64e515',
+                      elevation: 0,
+                    },
+                    headerBackTitleVisible: false,
+                    headerBackImage: () => (
+                      <View style={{marginLeft: 15}}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                      </View>
+                    ),
+                    headerRight: () => (
+                        <TouchableOpacity>
+                            <Text style={styles.textHeaderRight}>Post</Text>
+                        </TouchableOpacity>
+                        
+                    )
+                  }}
             />
         </Stack.Navigator>
     )
@@ -125,3 +146,13 @@ const AppStack = ({navigation}) => {
 }
 
 export default AppStack;
+
+const styles = StyleSheet.create({
+    textHeaderRight: {
+        color: "#2e64e5", 
+        marginRight: 15, 
+        fontSize: 17,
+        marginBottom: 10, 
+        fontWeight: 'bold'
+    }
+});
