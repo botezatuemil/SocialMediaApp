@@ -66,7 +66,7 @@ const AddPostScreen = () => {
             console.log('Post added!');
             Alert.alert(
                 "Post published!",
-                "Your image was successfully uploaded to the Firebase Cloud Storage"
+                "Your image was successfully uploaded to the Firebase Storage"
             );
             setPost(null);
         })
