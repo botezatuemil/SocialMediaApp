@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 
 import { 
@@ -14,16 +14,21 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 //import ImagePicker from 'react-native-image-crop-picker';
 import * as ImagePicker from 'expo-image-picker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 //import storage from '@react-native-firebase/storage';
-import {app} from '../firebase';
+import { app, db } from '../firebase';
+import firebase from 'firebase';
+import firestore from '@react-native-firebase/firestore';
+import { AuthContext } from '../navigation/AuthProvider';
 
 
 const AddPostScreen = () => {
     
+    const {user, logout} = useContext(AuthContext);
     const [selectedImage, setSelectedImage] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [transferred, setTransferred] = useState(0);
+    const [post, setPost] = useState(null);
 
     let openImagePickerAsync = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -46,6 +51,28 @@ const AddPostScreen = () => {
     const submitPost = async () => {
         const imageUrl = await uploadImage();
         console.log('Image URL: ', imageUrl);
+
+        //app.firestore();
+        db.collection('posts')
+        .add ({
+            userId: user.uid,
+            post: post, 
+            postImg: imageUrl, 
+            postTime: firebase.firestore.Timestamp.fromDate(new Date()),
+            likes: null, 
+            comments: null,
+        })
+        .then(() => {
+            console.log('Post added!');
+            Alert.alert(
+                "Post published!",
+                "Your image was successfully uploaded to the Firebase Cloud Storage"
+            );
+            setPost(null);
+        })
+        .catch((error) => {
+            console.log('Something went wrong', error)
+        })
     }
 
     const uploadImage = async() => {
@@ -75,14 +102,12 @@ const AddPostScreen = () => {
             const url = await storageRef.getDownloadURL();
             setUploading(false);
             setSelectedImage(null);
-            Alert.alert("Uploaded successfully");
             return url;
         } catch(e) {
             console.log(e);
             return null;
         }
-       
-        
+             
     }
 
     if (selectedImage !== null) {
@@ -98,6 +123,8 @@ const AddPostScreen = () => {
                         placeholder="What's on your mind?"
                         multiline
                         numberOfLines={4}
+                        value={post}
+                        onChangeText={(content) => setPost(content)}
                     />
                     {uploading ? (
                         <StatusWrapper>
