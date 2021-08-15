@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 
 import { 
     InputWrapper, 
@@ -76,12 +76,26 @@ const AddPostScreen = () => {
     const uploadImage = async() => {
         const response = await fetch(selectedImage.localUri)
         const blob = await response.blob();
-        var ref = app.storage().ref().child("FolderName");
+        var ref = app.storage().ref().child(new Date().toISOString());
+
+        setUploading(true);
+        setTransferred(0);
+
+        const task = ref.put(blob);
+
+        //Set transferred State
+        task.on('state_changed', taskSnapshot => {
+            console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+            setTransferred (
+                Math.round(taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100
+            );
+        });
+          
 
         try {
-            await ref.put(blob);
+            await task;
             setUploading(false);
-            Alert.alert();
+            Alert.alert("Uploaded successfully");
         } catch(e) {
             console.log(e)
         }
@@ -103,10 +117,17 @@ const AddPostScreen = () => {
                         multiline
                         numberOfLines={4}
                     />
-
-                <SubmitBtn onPress={uploadImage}>
-                    <SubmitBtnText>Post</SubmitBtnText>
-                </SubmitBtn>
+                    {uploading ? (
+                        <StatusWrapper>
+                            <Text>{transferred} % Completed!</Text>
+                            <ActivityIndicator size="large" color="#0000ff"/>
+                        </StatusWrapper>
+                    ) : (
+                        <SubmitBtn onPress={uploadImage}>
+                            <SubmitBtnText>Post</SubmitBtnText>
+                        </SubmitBtn>
+                    )}
+                    
 
                 </InputWrapper>
 
