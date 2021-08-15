@@ -17,7 +17,6 @@ import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import { Lato_400Regular, Lato_700Bold_Italic, Lato_700Bold } from '@expo-google-fonts/lato';
 
-import { useNavigation } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -26,7 +25,7 @@ const NavigateStack = ({navigation}) => {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name="HomeScreen"
+                name="RN Social"
                 component={HomeScreen}
                 options={{
                     headerTitleAlign: 'center',
@@ -98,7 +97,7 @@ const AppStack = ({navigation}) => {
     return (
        <Tab.Navigator labeled={false}>
            <Tab.Screen
-                name="RN Social"
+                name="HomeScreen"
                 component={NavigateStack}
                 options={{
                     tabBarShowLabel: false,
