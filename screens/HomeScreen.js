@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 
 import { Container } from '../styles/FeedStyles';
@@ -10,6 +10,10 @@ import { Lato_400Regular, Lato_700Bold_Italic, Lato_700Bold } from '@expo-google
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import PostCard from '../components/PostCard';
+
+import { db, app } from '../firebase';
+import firebase from 'firebase';
+
 
 const Posts = [
     {
@@ -65,8 +69,7 @@ const Posts = [
       userName: 'Christy Alex',
       userImg: require('../assets/users/user-7.jpg'),
       postTime: '2 days ago',
-      post:
-        'Hey there, this is my test for a post of my social app in React Native.',
+      post: 'Hey there, this is my test for a post of my social app in React Native.',
       postImg: 'none',
       liked: false,
       likes: '0',
@@ -74,7 +77,53 @@ const Posts = [
     },
 ];
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
+    
+  const [posts, setPosts] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      const fetchPosts = async() => {
+        try {
+          const list = [];
+          await firebase.firestore();
+          db.collection('posts')
+          .get()
+          .then((querySnapshot) => {
+             querySnapshot.forEach((doc) => {
+               const {userId, post, postImg, postTime, likes, comments} = doc.data();
+               list.push({
+                id: doc.id,
+                userId,
+                userName: 'Test name',
+                userImg: require('../assets/users/user-7.jpg'),
+                postTime: postTime,
+                post,
+                postImg,
+                liked: false,
+                likes,
+                comments,
+              })
+             })
+          })
+
+          setPosts(list);
+
+          if(loading) {
+            setLoading(false);
+          }
+
+          console.log('Posts', list);
+        } catch(e) {
+          console.log(e);
+        }
+      }
+      fetchPosts();
+      navigation.addListener("focus", () => setLoading(!loading))
+    }, [loading, navigation]);
+
+
+
     let [fontsLoaded, error] = useFonts ({
         Lato_400Regular,
         Lato_700Bold_Italic,
@@ -85,12 +134,13 @@ const HomeScreen = () => {
         return <AppLoading/>
     } 
 
+
     return (
         <Container>
             <FlatList
-                data={Posts}
+                data={posts}
                 renderItem={({item}) => <PostCard item={item} />}
-                keyExtractor={item => item.id}
+                keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
             />
         </Container>

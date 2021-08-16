@@ -32,12 +32,12 @@ const PostCard = ({item}) => {
                 <UserImg source={item.userImg}/>
                 <UserInfoText>
                     <UserName>{item.userName}</UserName>
-                    <PostTime>{item.postTime}</PostTime>
+                    <PostTime>{item.postTime.toString()}</PostTime>
                 </UserInfoText>
             </UserInfo>
 
             <PostText>{item.post}</PostText>
-            {item.postImg != 'none' ? <PostImg source={item.postImg}/> : <Divider/>}
+            {item.postImg != 'none' ? <PostImg source={{uri: item.postImg}}/> : <Divider/>}
             {/* <PostImg source={require('../assets/posts/post-img-2.jpg')}/> */}
 
             <InteractionWrapper>

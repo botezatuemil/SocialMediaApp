@@ -16,9 +16,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 //import storage from '@react-native-firebase/storage';
-import { app, db } from '../firebase';
+import {app, db} from '../firebase'
 import firebase from 'firebase';
-import firestore from '@react-native-firebase/firestore';
+
 import { AuthContext } from '../navigation/AuthProvider';
 
 
@@ -52,7 +52,7 @@ const AddPostScreen = () => {
         const imageUrl = await uploadImage();
         console.log('Image URL: ', imageUrl);
 
-        //app.firestore();
+        firebase.firestore();
         db.collection('posts')
         .add ({
             userId: user.uid,
@@ -76,6 +76,10 @@ const AddPostScreen = () => {
     }
 
     const uploadImage = async() => {
+
+        // if (selectedImage == null) {
+        //     return null;
+        // }
         const response = await fetch(selectedImage.localUri)
         const blob = await response.blob();
         //var ref = app.storage().ref().child(new Date().toISOString());
@@ -151,7 +155,6 @@ const AddPostScreen = () => {
             </View>
         )
     }
-
     return (
         <View style={styles.container}>
             <InputWrapper>
@@ -160,6 +163,7 @@ const AddPostScreen = () => {
                     multiline
                     numberOfLines={4}
                 />
+                
             </InputWrapper>
 
             <ActionButton buttonColor="rgba(231,76,60,1)">

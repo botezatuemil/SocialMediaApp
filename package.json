@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/lato": "^0.2.0",
+    "@firebase/firestore": "^2.3.10",
     "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-community/google-signin": "^5.0.0",
     "@react-native-firebase/app": "^12.5.0",
