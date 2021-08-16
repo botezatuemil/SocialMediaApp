@@ -12,7 +12,7 @@ import HomeScreen from '../screens/HomeScreen';
 import AddPostScreen from '../screens/AddPostScreen';
 import ChatScreen from '../screens/ChatScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-
+import MessagesScreen from '../screens/MessagesScreen';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import { Lato_400Regular, Lato_700Bold_Italic, Lato_700Bold } from '@expo-google-fonts/lato';
@@ -82,7 +82,37 @@ const NavigateStack = ({navigation}) => {
     )
 }
 
-const AppStack = ({navigation}) => {
+const MessageStack = ({navigation}) => (
+   
+        <Stack.Navigator>
+            <Stack.Screen name="Messages" component={MessagesScreen} options={{headerTitleAlign: 'center'}}/>
+            <Stack.Screen 
+                name="Chat" 
+                component={ChatScreen} 
+                options={({route}) => ({
+                    title: route.params.userName,
+                    headerTitleAlign: 'center',
+                    headerBackTitleVisible: false,
+                    headerBackImage: () => (
+                        <View style={{marginLeft: 15}}>
+                          <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                        </View>
+                    ),
+                })}
+        />
+        </Stack.Navigator>
+)
+
+const AppStack = () => {
+    
+    const getTabBarVisibility = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : '';
+
+        if (routeName === 'Chat') {
+            return false;
+        }
+        return true;
+    }
     
     let [fontsLoaded, error] = useFonts ({
         Lato_400Regular,
@@ -113,10 +143,13 @@ const AppStack = ({navigation}) => {
                 }}
            />
            <Tab.Screen
-                name="ChatScreen"
-                component={ChatScreen}
-                options={{
+                name="MessageStack"
+                component={MessageStack}
+                options={({route}) => ({
+                    tabBarVisible: getTabBarVisibility(route),
                     tabBarShowLabel: false,
+                    headerTitleAlign: 'center',
+                    headerShown: false,
                     tabBarIcon: ({color, size}) => (
                         <Ionicons
                             name="chatbox-ellipses-outline"
@@ -124,7 +157,7 @@ const AppStack = ({navigation}) => {
                             size={size}
                         />
                     )
-                }}
+                })}
            />
            <Tab.Screen
                 name="ProfileScreen"
