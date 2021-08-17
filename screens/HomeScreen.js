@@ -77,64 +77,53 @@ const Posts = [
     },
 ];
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
     
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      const fetchPosts = async() => {
-        try {
-          const list = [];
-          await firebase.firestore();
-          db.collection('posts')
-          .get()
-          .then((querySnapshot) => {
-             querySnapshot.forEach((doc) => {
-               const {userId, post, postImg, postTime, likes, comments} = doc.data();
-               list.push({
-                id: doc.id,
-                userId,
-                userName: 'Test name',
-                userImg: require('../assets/users/user-7.jpg'),
-                postTime: postTime,
-                post,
-                postImg,
-                liked: false,
-                likes,
-                comments,
-              })
-             })
+    
+  const fetchPosts = async() => {
+    try {
+      const list = [];
+      await firebase.firestore();
+      await db.collection('posts')
+      .get()
+      .then((querySnapshot) => {
+          querySnapshot.docs.forEach((doc) => {
+            const {userId, post, postImg, postTime, likes, comments} = doc.data();
+            list.push({
+            id: doc.id,
+            userId,
+            userName: 'Test name',
+            userImg: require('../assets/users/user-7.jpg'),
+            postTime: postTime,
+            post,
+            postImg,
+            liked: false,
+            likes,
+            comments,
           })
+          })
+      })
 
-          setPosts(list);
+      setPosts(list);
 
-          if(loading) {
-            setLoading(false);
-          }
-
-          console.log('Posts', list);
-        } catch(e) {
-          console.log(e);
-        }
+      if(loading) {
+        setLoading(false);
       }
-      fetchPosts();
-      navigation.addListener("focus", () => setLoading(!loading))
-    }, [loading, navigation]);
 
-
-
-    let [fontsLoaded, error] = useFonts ({
-        Lato_400Regular,
-        Lato_700Bold_Italic,
-        Lato_700Bold
-    });
+      console.log('Posts', list);
+    } catch(e) {
+      console.log(e);
+    }
+  }
   
-    if (!fontsLoaded) {
-        return <AppLoading/>
-    } 
-
-
+  useEffect(() => {
+    fetchPosts();
+    navigation.addListener("focus", () => setLoading(!loading));
+  }, [loading, navigation])
+      
     return (
         <Container>
             <FlatList

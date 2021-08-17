@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5332c239-7f8d-4f2c-ab24-1f98921c202e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../navigation/AppStack.js" beforeDir="false" afterPath="$PROJECT_DIR$/../navigation/AppStack.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
-    </list>
+    <list default="true" id="5332c239-7f8d-4f2c-ab24-1f98921c202e" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,9 +114,9 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="351" y="0" key="#app/0.0.1280.689@0.0.1280.689" timestamp="1628947293681" />
-    <state x="93" y="93" width="1095" height="504" key="AVDManager" timestamp="1629014501623">
+    <state x="93" y="93" width="1095" height="504" key="AVDManager" timestamp="1629140019506">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state x="93" y="93" width="1095" height="504" key="AVDManager/0.0.1280.689@0.0.1280.689" timestamp="1629014501623" />
+    <state x="93" y="93" width="1095" height="504" key="AVDManager/0.0.1280.689@0.0.1280.689" timestamp="1629140019506" />
   </component>
 </project>

@@ -13,6 +13,7 @@ import AddPostScreen from '../screens/AddPostScreen';
 import ChatScreen from '../screens/ChatScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MessagesScreen from '../screens/MessagesScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import { Lato_400Regular, Lato_700Bold_Italic, Lato_700Bold } from '@expo-google-fonts/lato';
@@ -82,26 +83,51 @@ const NavigateStack = ({navigation}) => {
     )
 }
 
-const MessageStack = ({navigation}) => (
-   
-        <Stack.Navigator>
-            <Stack.Screen name="Messages" component={MessagesScreen} options={{headerTitleAlign: 'center'}}/>
-            <Stack.Screen 
-                name="Chat" 
-                component={ChatScreen} 
-                options={({route}) => ({
-                    title: route.params.userName,
-                    headerTitleAlign: 'center',
-                    headerBackTitleVisible: false,
-                    headerBackImage: () => (
-                        <View style={{marginLeft: 15}}>
-                          <Ionicons name="arrow-back" size={25} color="#2e64e5" />
-                        </View>
-                    ),
-                })}
-        />
-        </Stack.Navigator>
+const MessageStack = ({navigation}) => ( 
+    <Stack.Navigator>
+        <Stack.Screen name="Messages" component={MessagesScreen} options={{headerTitleAlign: 'center'}}/>
+        <Stack.Screen 
+            name="Chat" 
+            component={ChatScreen} 
+            options={({route}) => ({
+                title: route.params.userName,
+                headerTitleAlign: 'center',
+                headerBackTitleVisible: false,
+                headerBackImage: () => (
+                    <View style={{marginLeft: 15}}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                    </View>
+                ),
+            })}
+    />
+    </Stack.Navigator>
 )
+
+const ProfileStack = ({navigation}) => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{
+          headerTitle: 'Edit Profile',
+          headerBackTitleVisible: false,
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#fff',
+            shadowColor: '#fff',
+            elevation: 0,
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
 
 const AppStack = () => {
     
@@ -161,9 +187,10 @@ const AppStack = () => {
            />
            <Tab.Screen
                 name="ProfileScreen"
-                component={ProfileScreen}
+                component={ProfileStack}
                 options={{
                     tabBarShowLabel: false,
+                    headerShown: false,
                     tabBarIcon: ({color, size}) => (
                         <Ionicons
                             name="person-outline"
