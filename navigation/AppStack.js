@@ -71,12 +71,7 @@ const NavigateStack = ({navigation}) => {
                         <Ionicons name="arrow-back" size={25} color="#2e64e5" />
                       </View>
                     ),
-                    headerRight: () => (
-                        <TouchableOpacity>
-                            <Text style={styles.textHeaderRight}>Post</Text>
-                        </TouchableOpacity>
-                        
-                    )
+                    
                   }}
             />
         </Stack.Navigator>
