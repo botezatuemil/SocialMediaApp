@@ -77,9 +77,9 @@ const AddPostScreen = () => {
 
     const uploadImage = async() => {
 
-        // if (selectedImage == null) {
-        //     return null;
-        // }
+        if (selectedImage == null) {
+            return null;
+        }
         const response = await fetch(selectedImage.localUri)
         const blob = await response.blob();
         //var ref = app.storage().ref().child(new Date().toISOString());
@@ -114,15 +114,10 @@ const AddPostScreen = () => {
              
     }
 
-    if (selectedImage !== null) {
         return (                
             <View style={styles.container}>
-                <Image
-                    source={{ uri: selectedImage.localUri }}
-                    style={styles.thumbnail}
-                />
-
                 <InputWrapper>
+                    {selectedImage != null ? <AddImage source={{uri: selectedImage.localUri}} /> : null}
                     <InputField
                         placeholder="What's on your mind?"
                         multiline
@@ -143,7 +138,6 @@ const AddPostScreen = () => {
                     
 
                 </InputWrapper>
-
                 <ActionButton buttonColor="rgba(231,76,60,1)">
                     <ActionButton.Item buttonColor='#9b59b6' title="Take Photo" onPress={() => {}}>
                         <Icon name="camera-outline" style={styles.actionButtonIcon} />
@@ -154,29 +148,9 @@ const AddPostScreen = () => {
                 </ActionButton>
             </View>
         )
-    }
-    return (
-        <View style={styles.container}>
-            <InputWrapper>
-                <InputField
-                    placeholder="What's on your mind?"
-                    multiline
-                    numberOfLines={4}
-                />
-                
-            </InputWrapper>
-
-            <ActionButton buttonColor="rgba(231,76,60,1)">
-                <ActionButton.Item buttonColor='#9b59b6' title="Take Photo" onPress={() => {}}>
-                    <Icon name="camera-outline" style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-                <ActionButton.Item buttonColor='#3498db' title="Choose Photo" onPress={openImagePickerAsync}>
-                    <Icon name="md-images-outline" style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-            </ActionButton>
-        </View>
-    );
 }
+
+
 
 export default AddPostScreen;
 

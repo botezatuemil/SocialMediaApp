@@ -8,9 +8,9 @@ export const Container = styled.View`
 `;
 
 export const Card = styled.View`
-    background-color: #f8f8f8;
-    width: 100%;
-    margin-bottom: 10px;
+    background-color: #ededed;
+    width: 360px;
+    margin-bottom: 50px;
     border-radius: 20px;
 `;
 
@@ -39,7 +39,7 @@ export const UserName = styled.Text`
 
 export const PostTime = styled.Text`
     font-size: 12px;
-    color: #666666
+    color: #666666;
 `;
 
 export const PostText = styled.Text`
@@ -49,8 +49,8 @@ export const PostText = styled.Text`
 `;
 
 export const PostImg = styled.Image`
-    width: 372px;
-    height: 470px;
+    width: 100%;
+    height: 450px;
     margin-top: 15px;
 `;
 

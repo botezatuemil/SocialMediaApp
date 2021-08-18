@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
             userId,
             userName: 'Test name',
             userImg: require('../assets/users/user-7.jpg'),
-            postTime: postTime,
+            postTime,
             post,
             postImg,
             liked: false,
@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
             <FlatList
                 data={posts}
                 renderItem={({item}) => <PostCard item={item} />}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
             />
         </Container>

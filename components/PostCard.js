@@ -4,6 +4,8 @@ import { Container, Card, UserImg, UserInfo, UserName, UserInfoText, PostTime, P
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import moment from 'moment';
+
 const PostCard = ({item}) => {
 
     let likeIcon = item.liked ? 'heart' : 'heart-outline';
@@ -32,13 +34,12 @@ const PostCard = ({item}) => {
                 <UserImg source={item.userImg}/>
                 <UserInfoText>
                     <UserName>{item.userName}</UserName>
-                    <PostTime>{item.postTime.toString()}</PostTime>
+                    <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>
                 </UserInfoText>
             </UserInfo>
 
             <PostText>{item.post}</PostText>
-            {item.postImg != 'none' ? <PostImg source={{uri: item.postImg}}/> : <Divider/>}
-            {/* <PostImg source={require('../assets/posts/post-img-2.jpg')}/> */}
+            {item.postImg != null ? <PostImg source={{uri: item.postImg}}/> : <Divider/>}
 
             <InteractionWrapper>
                 <Interaction active={item.liked}>
@@ -46,7 +47,7 @@ const PostCard = ({item}) => {
                     <InteractionText active={item.liked}>{likeText}</InteractionText>
                 </Interaction>
 
-                <Interaction>
+                <Interaction> 
                     <Ionicons name="md-chatbubble-outline" size={25}/>
                     <InteractionText>{commentText}</InteractionText>
                 </Interaction>
