@@ -199,7 +199,7 @@ const HomeScreen = ({ navigation }) => {
         <Container>
             <FlatList
                 data={posts}
-                renderItem={({item}) => <PostCard item={item} onDelete={handleDelete}/>}
+                renderItem={({item}) => <PostCard item={item} onDelete={handleDelete} onPress={() => navigation.navigate('HomeProfile', {userId: item.userId})}/>}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
             />

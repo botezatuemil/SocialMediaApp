@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-
+import { TouchableOpacity } from 'react-native';
 import { Container, Card, UserImg, UserInfo, UserName, UserInfoText, PostTime, PostText, PostImg, InteractionWrapper, Interaction, InteractionText, Divider } from '../styles/FeedStyles';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,7 +8,7 @@ import moment from 'moment';
 
 import { AuthContext } from '../navigation/AuthProvider';
 
-const PostCard = ({item, onDelete}) => {
+const PostCard = ({item, onDelete, onPress}) => {
 
     const {user, logout} = useContext(AuthContext);
 
@@ -37,7 +37,9 @@ const PostCard = ({item, onDelete}) => {
             <UserInfo>
                 <UserImg source={item.userImg}/>
                 <UserInfoText>
+                   <TouchableOpacity onPress={onPress}>
                     <UserName>{item.userName}</UserName>
+                   </TouchableOpacity>
                     <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>
                 </UserInfoText>
             </UserInfo>

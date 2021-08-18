@@ -1,50 +1,64 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
 
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
+import EditProfileScreen from './EditProfileScreen';
 
-const ProfileScreen = () => {
+import PostCard from '../components/PostCard';
+
+import { db, app } from '../firebase';
+import firebase from 'firebase';
+
+const ProfileScreen = ({navigation, route}) => {
     const {user, logout} = useContext(AuthContext);
-    // useEffect(() => {
-    //     const fetchPosts = async() => {
-    //       try {
-    //         const list = [];
-    //         await firebase.firestore();
-    //         db.collection('posts')
-    //         .get()
-    //         .then((querySnapshot) => {
-    //            querySnapshot.forEach((doc) => {
-    //              const {userId, post, postImg, postTime, likes, comments} = doc.data();
-    //              list.push({
-    //               id: doc.id,
-    //               userId,
-    //               userName: 'Test name',
-    //               userImg: require('../assets/users/user-7.jpg'),
-    //               postTime: postTime,
-    //               post,
-    //               postImg,
-    //               liked: false,
-    //               likes,
-    //               comments,
-    //             })
-    //            })
-    //         })
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [deleted, setDeleted] = useState(false);
+      
+    const fetchPosts = async() => {
+      try {
+        const list = [];
+        await firebase.firestore();
+        await db.collection('posts')
+        .where('userId', '==', user.uid)
+        .orderBy('postTime', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.docs.forEach((doc) => {
+              const {userId, post, postImg, postTime, likes, comments} = doc.data();
+              list.push({
+              id: doc.id,
+              userId,
+              userName: 'Test name',
+              userImg: require('../assets/users/user-7.jpg'),
+              postTime,
+              post,
+              postImg,
+              liked: false,
+              likes,
+              comments,
+            })
+            })
+        })
   
-    //         setPosts(list);
+        setPosts(list);
   
-    //         if(loading) {
-    //           setLoading(false);
-    //         }
+        if(loading) {
+          setLoading(false);
+        }
   
-    //         console.log('Posts', list);
-    //       } catch(e) {
-    //         console.log(e);
-    //       }
-    //     }
-    //     fetchPosts();
-    //     navigation.addListener("focus", () => setLoading(!loading))
-    //   }, [loading, navigation]);
+      } catch(e) {
+        console.log(e);
+      }
+    }
+    
+    useEffect(() => {
+      fetchPosts();
+      navigation.addListener("focus", () => setLoading(!loading));
+    }, [loading, navigation])
+
+    const handleDelete = () => {}
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -58,18 +72,34 @@ const ProfileScreen = () => {
                     source={require('../assets/users/user-8.jpg')}
                 />
                 <Text style={styles.userName}>Jenny Doe</Text>
+                <Text>{route.params ? route.params.userId : user.uid}</Text>
                 <Text style={styles.aboutUser}>
                     Making self sustaining marketing solutions empowering software modern solutions
                 </Text>
 
                 <View style={styles.userBtnWrapper}>
-                    <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
-                        <Text style={styles.userBtnTxt}>Message</Text>
-                    </TouchableOpacity>
+                  {route.params ? (
+                    <>
+                     <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
+                      <Text style={styles.userBtnTxt}>Message</Text>
+                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
                         <Text style={styles.userBtnTxt}>Follow</Text>
                     </TouchableOpacity>
+                    </>
+                  ): (
+                    <>
+                    <TouchableOpacity style={styles.userBtn} onPress={() => navigation.navigate('EditProfile')}>
+                      <Text style={styles.userBtnTxt}>Edit</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.userBtn} onPress={() => logout()}>
+                      <Text style={styles.userBtnTxt}>Logout</Text>
+                    </TouchableOpacity>
+                    </>
+                  )}
+                   
                 </View>
 
                 <View style={styles.userInfoWrapper}>
@@ -86,6 +116,10 @@ const ProfileScreen = () => {
                         <Text style={styles.userInfoSubTitle}>Following</Text>
                     </View>
                 </View>
+
+                {posts.map((item) => (
+                  <PostCard key={item.id} item={item} onDelete={handleDelete}/>
+                ))}
             </ScrollView>
         </SafeAreaView>
     )

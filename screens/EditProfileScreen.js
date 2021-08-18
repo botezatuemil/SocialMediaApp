@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 
-const EditProfileScreen = () => {
+const EditProfileScreen = ({navigation}) => {
     return (
         <View>
 
