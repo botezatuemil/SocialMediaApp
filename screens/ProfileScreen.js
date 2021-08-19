@@ -15,13 +15,15 @@ const ProfileScreen = ({navigation, route}) => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [deleted, setDeleted] = useState(false);
+    const [userData, setUserData] = useState(null);
+
       
     const fetchPosts = async() => {
       try {
         const list = [];
         await firebase.firestore();
         await db.collection('posts')
-        .where('userId', '==', user.uid)
+        .where('userId', '==', route.params ? route.params.userId : user.uid)
         .orderBy('postTime', 'desc')
         .get()
         .then((querySnapshot) => {
@@ -53,7 +55,21 @@ const ProfileScreen = ({navigation, route}) => {
       }
     }
     
+    const getUser = async() => {
+      await firebase.firestore()
+      db.collection('users')
+      .doc(route.params ? route.params.userId : user.uid)
+      .get()
+      .then((documentSnapshot) => {
+          if (documentSnapshot.exists) {
+              console.log("user data", documentSnapshot.data());
+              setUserData(documentSnapshot.data());
+          }
+      })
+    }
+
     useEffect(() => {
+      getUser();
       fetchPosts();
       navigation.addListener("focus", () => setLoading(!loading));
     }, [loading, navigation])
@@ -69,12 +85,15 @@ const ProfileScreen = ({navigation, route}) => {
             >
                 <Image
                     style={styles.userImg}
-                    source={require('../assets/users/user-8.jpg')}
+                    source={{uri: userData ? userData.userImg || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' :
+                    'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
                 />
-                <Text style={styles.userName}>Jenny Doe</Text>
-                <Text>{route.params ? route.params.userId : user.uid}</Text>
+                <Text style={styles.userName}>
+                  {userData ? userData.fname || 'User' : 'User'} {userData ? userData.lname || 'name' : 'name'} 
+                </Text>
+                {/* <Text>{route.params ? route.params.userId : user.uid}</Text> */}
                 <Text style={styles.aboutUser}>
-                    Making self sustaining marketing solutions empowering software modern solutions
+                    {userData ? userData.email || 'No details added' : ''}
                 </Text>
 
                 <View style={styles.userBtnWrapper}>
@@ -104,7 +123,7 @@ const ProfileScreen = ({navigation, route}) => {
 
                 <View style={styles.userInfoWrapper}>
                     <View style={styles.userInfoItem}>
-                        <Text style={styles.userInfoTitle}>22</Text>
+                        <Text style={styles.userInfoTitle}>{posts.length}</Text>
                         <Text style={styles.userInfoSubTitle}>Posts</Text>
                     </View>
                     <View style={styles.userInfoItem}>
