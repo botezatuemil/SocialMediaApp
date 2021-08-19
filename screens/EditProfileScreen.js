@@ -1,23 +1,28 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ImageBackground, TextInput, KeyboardAvoidingView } from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, ImageBackground, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import * as ImagePicker from 'expo-image-picker';
 
 import FormButton from '../components/FormButton';
+import { AuthContext } from '../navigation/AuthProvider';
+import firebase from 'firebase';
+import { db, app } from '../firebase';
 
 const EditProfileScreen = ({navigation}) => {
 
+    const {user, logout} = useContext(AuthContext);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [transferred, setTransferred] = useState(0);
     const [name, setName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [userData, setUserData] = useState(null);
 
     let openImagePickerAsync = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -36,6 +41,92 @@ const EditProfileScreen = ({navigation}) => {
     
         setSelectedImage({ localUri: pickerResult.uri });
     } 
+
+
+    const getUser = async() => {
+        const currentUser = await firebase.firestore()
+        db.collection('users')
+        .doc(user.uid)
+        .get()
+        .then((documentSnapshot) => {
+            if (documentSnapshot.exists) {
+                console.log("user data", documentSnapshot.data());
+                setUserData(documentSnapshot.data());
+            }
+        })
+
+    }
+
+    const handleUpdate = async() => {
+        let imgUrl = await uploadImage();
+         
+        if (imgUrl == null && userData.userImg) {
+            imgUrl = userData.userImg;
+        }
+
+        firebase.firestore();
+        db.collection('users')
+        .doc(user.uid)
+        .set({
+            fname: userData.fname,
+            lname: userData.lname,
+            phone: userData.phone,
+            email: userData.email,
+            country: userData.country,
+            city: userData.city,
+            userImg: imgUrl,
+        })
+        .then(() => {
+            console.log('User updated!');
+            Alert.alert(
+                'Profile updated!',
+                'Your profile has been successfully updated.'
+            )
+        })
+    }
+
+    const uploadImage = async() => {
+
+        if (selectedImage == null) {
+            return null;
+        }
+        const response = await fetch(selectedImage.localUri)
+        const blob = await response.blob();
+        //var ref = app.storage().ref().child(new Date().toISOString());
+
+        var filename = new Date().toISOString();
+
+        setUploading(true);
+        setTransferred(0);
+
+        const storageRef = app.storage().ref(`photos/${filename}`)
+        const task = storageRef.put(blob);
+
+        //Set transferred State
+        task.on('state_changed', taskSnapshot => {
+            console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+            setTransferred (
+                Math.round(taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100
+            );
+        });
+          
+
+        try {
+            await task;
+            const url = await storageRef.getDownloadURL();
+            setUploading(false);
+            setSelectedImage(null);
+            return url;
+        } catch(e) {
+            console.log(e);
+            return null;
+        }
+             
+    }
+
+    useEffect(() => {
+        getUser();
+    }, [])
 
     const renderInner = () => (
         <View style={styles.panel}>
@@ -95,7 +186,14 @@ const EditProfileScreen = ({navigation}) => {
                             
                             
                             <ImageBackground
-                                source={ selectedImage != null ? { uri : selectedImage.localUri} : require('../assets/users/user-8.jpg')}
+                                source={{ 
+                                    uri: selectedImage
+                                    ? selectedImage.localUri
+                                    : userData
+                                    ? userData.userImg ||
+                                      'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
+                                    : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
+                                }}
                                 style={{height: 100, width: 100,}}
                                 imageStyle={{borderRadius: 15}}
                             >
@@ -120,7 +218,9 @@ const EditProfileScreen = ({navigation}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <Text style={{marginTop: 10, fontSize: 20, fontWeight: 'bold'}}>{name} {lastName}</Text>
+                    <Text style={{marginTop: 10, fontSize: 20, fontWeight: 'bold'}}>
+                        {userData ? userData.fname : ''} {userData ? userData.lname : ''}
+                    </Text>
                 </View>
 
                 <View style={styles.action}>
@@ -130,7 +230,8 @@ const EditProfileScreen = ({navigation}) => {
                         placeholderTextColor="#666666"
                         autoCorect={false}
                         style={styles.textInput}
-                        onChangeText={(txt) => setName(txt)}
+                        value={userData ? userData.fname : ''}
+                        onChangeText={(txt) => setUserData({...userData, fname: txt})}
                     />
                 </View>
 
@@ -141,7 +242,8 @@ const EditProfileScreen = ({navigation}) => {
                         placeholderTextColor="#666666"
                         autoCorect={false}
                         style={styles.textInput}
-                        onChangeText={(txt) => setLastName(txt)}
+                        value={userData ? userData.lname : ''}
+                        onChangeText={(txt) => setUserData({...userData, lname: txt})}
                     />
                 </View>
 
@@ -153,6 +255,8 @@ const EditProfileScreen = ({navigation}) => {
                         keyboardType="number-pad"
                         autoCorect={false}
                         style={styles.textInput}
+                        value={userData ? userData.phone : ''}
+                        onChangeText={(txt) => setUserData({...userData, phone: txt})}
                     />
                 </View>
 
@@ -164,6 +268,8 @@ const EditProfileScreen = ({navigation}) => {
                         keyboardType="email-address"
                         autoCorect={false}
                         style={styles.textInput}
+                        value={userData ? userData.email : ''}
+                        onChangeText={(txt) => setUserData({...userData, email: txt})}
                     />
                 </View>
 
@@ -174,6 +280,8 @@ const EditProfileScreen = ({navigation}) => {
                         placeholderTextColor="#666666"
                         autoCorect={false}
                         style={styles.textInput}
+                        value={userData ? userData.country : ''}
+                        onChangeText={(txt) => setUserData({...userData, country: txt})}
                     />
                 </View>
 
@@ -184,13 +292,15 @@ const EditProfileScreen = ({navigation}) => {
                         placeholderTextColor="#666666"
                         autoCorect={false}
                         style={styles.textInput, {marginTop: -25, marginLeft: 28}}
+                        value={userData ? userData.city : ''}
+                        onChangeText={(txt) => setUserData({...userData, city: txt})}
                     />
                 </KeyboardAwareScrollView >
 
                 {/* <TouchableOpacity style={styles.commandButton} }>
                     <Text style={styles.panelButtonTitle}>Submit</Text>
                 </TouchableOpacity> */}
-                <FormButton buttonTitle="Update"/>
+                <FormButton buttonTitle="Update" onPress={handleUpdate}/>
 
             </Animated.View>
         </View>
