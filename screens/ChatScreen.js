@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, SafeAreaView, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,6 +9,7 @@ import { windowHeight, windowWidth } from '../utils/Dimensions';
 const ChatScreen = ({route}) => {
     
     const [input, setInput] = useState("");
+    const [messages, setMessages] = useState([]);
 
     const sendText = async() => {
         Keyboard.dismiss();
@@ -25,6 +26,24 @@ const ChatScreen = ({route}) => {
         setInput("");
     }
 
+    useEffect(() => {
+        const unsubscribe = db
+        .collection('chats')
+        .doc(route.params.id)
+        .collection('messages')
+        .orderBy("timestamp", 'desc')
+        .onSnapshot((snapshot) => setMessages(
+            snapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data()
+            }))
+        ));
+
+        // messages.map(({id, data}) => {
+        //     console.log("data", data.textMessage)
+        // }
+        //return unsubscribe;
+    }, [route])
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="position" keyboardVerticalOffset={150}>
@@ -35,6 +54,7 @@ const ChatScreen = ({route}) => {
                         placeholder="Type something..."
                         onChangeText={(text) => setInput(text)}
                         style={styles.textInput}
+                        onSubmitEditing={sendText}
                     />
                 </View>
                 
@@ -43,14 +63,31 @@ const ChatScreen = ({route}) => {
                         source={require('../assets/send.png')}
                         style={{
                             width: 60,
-                            height: 60,
-                            
+                            height: 60,  
                         }}
                     />
                 </TouchableOpacity>
 
+                
                 <ScrollView>
-                    
+                    {messages.map(({id, data}) => 
+                        data.email === auth.currentUser.email ? (
+                            <View key={id} style={styles.receiver}>
+                                <Text style={styles.textReceiver}>
+                                    {data.textMessage}
+                                </Text>
+                            </View>
+                        ) : (
+                            <View style={styles.sender}>
+                                <Text>
+                                    {data.textMessage}
+                                </Text>
+                            </View>
+                        )
+                    )}
+                    <View style={styles.receiver}>
+                        <Text style={styles.textReceiver}>Hey ce faci mai traiesti</Text>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         </KeyboardAvoidingView>
@@ -79,6 +116,20 @@ const styles = StyleSheet.create({
     textInput: {
         marginLeft: 40, 
         top: 20,
+    },
+    receiver: {
+        //alignSelf: 'flex-end',
+        backgroundColor: '#003c95',
+        maxWidth: '80%',
+        position: 'relative',
+        //top: -50,
+    },
+    textReceiver: {
+        alignSelf: 'center',
+
+    },  
+    sender: {
+
     }
 })
 
