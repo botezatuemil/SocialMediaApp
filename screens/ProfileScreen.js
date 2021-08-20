@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
 
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
@@ -41,7 +41,7 @@ const ProfileScreen = ({navigation, route}) => {
               likes,
               comments,
             })
-            })
+          })
         })
   
         setPosts(list);
@@ -62,7 +62,7 @@ const ProfileScreen = ({navigation, route}) => {
       .get()
       .then((documentSnapshot) => {
           if (documentSnapshot.exists) {
-              console.log("user data", documentSnapshot.data());
+              //console.log("user data", documentSnapshot.data());
               setUserData(documentSnapshot.data());
           }
       })
@@ -75,6 +75,29 @@ const ProfileScreen = ({navigation, route}) => {
     }, [loading, navigation])
 
     const handleDelete = () => {}
+
+
+    const addChat = async() => {
+        // let document = await firebase.firestore()
+        // await db.collection("chats").doc(user.uid).get();
+
+        firebase.firestore();
+        db.collection('chats')
+        .add({
+          userId: user.uid,
+          userName: userData.lname,
+          messageText: "hey i am here",
+          postTime: firebase.firestore.Timestamp.fromDate(new Date()),
+          userImg: userData.userImg
+        })
+        .then(() => {
+          console.log("Added chat");
+        })
+        .catch((error) => {
+          console.log('Something went wrong', error);
+        })
+    } 
+    
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -99,7 +122,7 @@ const ProfileScreen = ({navigation, route}) => {
                 <View style={styles.userBtnWrapper}>
                   {route.params ? (
                     <>
-                     <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
+                     <TouchableOpacity style={styles.userBtn} onPress={addChat}>
                       <Text style={styles.userBtnTxt}>Message</Text>
                      </TouchableOpacity>
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
 import {
   Container,
@@ -12,6 +12,10 @@ import {
   MessageText,
   TextSection,
 } from '../styles/MessageStyle';
+
+import moment from 'moment';
+import firebase from 'firebase';
+import { db } from '../firebase';
 
 const Messages = [
   {
@@ -56,23 +60,64 @@ const Messages = [
   },
 ];
 
-const MessagesScreen = ({navigation}) => {
+
+const MessagesScreen = ({navigation, route}) => {
+
+    const [posts, setPosts] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const getChatScreen = async() => {
+        try {
+            const list = [];
+            await firebase.firestore();
+            await db.collection('chats')
+            //.orderBy('postTime', 'desc')
+            .get()
+            .then(querrySnapshot => {
+                querrySnapshot.docs.forEach(doc => {
+                    const {userId, userName, messageText, postTime, userImg} = doc.data();
+                    list.push({
+                        id: doc.id,
+                        userId,
+                        userName, 
+                        messageText,
+                        postTime,
+                        userImg,
+                    })
+                })
+            })
+            setPosts(list);
+
+            if(loading) {
+                setLoading(false);
+            }
+        }
+        catch(e) {
+            console.log("something went wrong!", e);
+        }
+    }
+
+    useEffect(() => {
+        getChatScreen();
+        navigation.addListener("focus", () => setLoading(!loading));
+    }, [navigation, loading])
+
     return (
         <Container>
             <FlatList
-                data={Messages}
+                data={posts}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
                     <Card onPress={() => navigation.navigate('Chat', {userName: item.userName})}>
                         <UserInfo>
                             <UserImgWrapper>
-                                <UserImg source={item.userImg}/>
+                                <UserImg source={{uri: item.userImg}}/>
                             </UserImgWrapper>
 
                             <TextSection>
                                 <UserInfoText>
                                     <UserName>{item.userName}</UserName>
-                                    <PostTime>{item.messageTime}</PostTime>
+                                    <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>
                                 </UserInfoText>
                                 <MessageText>{item.messageText}</MessageText>
                             </TextSection>

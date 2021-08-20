@@ -50,7 +50,6 @@ const EditProfileScreen = ({navigation}) => {
         .get()
         .then((documentSnapshot) => {
             if (documentSnapshot.exists) {
-                console.log("user data", documentSnapshot.data());
                 setUserData(documentSnapshot.data());
             }
         })

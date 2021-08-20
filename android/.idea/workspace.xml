@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5332c239-7f8d-4f2c-ab24-1f98921c202e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screens/EditProfileScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/EditProfileScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,9 +116,9 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="351" y="0" key="#app/0.0.1280.689@0.0.1280.689" timestamp="1628947293681" />
-    <state x="93" y="93" width="1095" height="504" key="AVDManager" timestamp="1629361493986">
+    <state x="93" y="93" width="1095" height="504" key="AVDManager" timestamp="1629464016105">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state x="93" y="93" width="1095" height="504" key="AVDManager/0.0.1280.689@0.0.1280.689" timestamp="1629361493986" />
+    <state x="93" y="93" width="1095" height="504" key="AVDManager/0.0.1280.689@0.0.1280.689" timestamp="1629464016105" />
   </component>
 </project>
