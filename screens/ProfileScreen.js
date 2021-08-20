@@ -78,12 +78,31 @@ const ProfileScreen = ({navigation, route}) => {
 
 
     const addChat = async() => {
-        // let document = await firebase.firestore()
-        // await db.collection("chats").doc(user.uid).get();
+       
+      // await firebase.firestore()
+      // let document = await db.collection("chats").get();
+      //   await document.ref.add({
+      //     userId: user.uid,
+      //     userName: userData.lname,
+      //     messageText: "hey i am here",
+      //     postTime: firebase.firestore.Timestamp.fromDate(new Date()),
+      //     userImg: userData.userImg
+      //   });
+       
+      // else {
+      //   await document.ref.set({
+      //     userId: user.uid,
+      //     userName: userData.lname,
+      //     messageText: "hey i am here",
+      //     postTime: firebase.firestore.Timestamp.fromDate(new Date()),
+      //     userImg: userData.userImg
+      //   });
+      // }
 
         firebase.firestore();
         db.collection('chats')
-        .add({
+        .doc(user.uid)
+        .set({
           userId: user.uid,
           userName: userData.lname,
           messageText: "hey i am here",
