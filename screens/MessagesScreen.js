@@ -78,7 +78,7 @@ const MessagesScreen = ({navigation, route}) => {
                     const {userId, userName, messageText, postTime, userImg} = doc.data();
                     list.push({
                         id: doc.id,
-                        userId,
+                        //userId,
                         userName, 
                         messageText,
                         postTime,

@@ -2,14 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5332c239-7f8d-4f2c-ab24-1f98921c202e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/ChatScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/ChatScreen.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[Pixel_4_API_29]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -116,9 +116,9 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="351" y="0" key="#app/0.0.1280.689@0.0.1280.689" timestamp="1628947293681" />
-    <state x="93" y="93" width="1095" height="504" key="AVDManager" timestamp="1629464016105">
+    <state x="93" y="93" width="1095" height="504" key="AVDManager" timestamp="1629495549934">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state x="93" y="93" width="1095" height="504" key="AVDManager/0.0.1280.689@0.0.1280.689" timestamp="1629464016105" />
+    <state x="93" y="93" width="1095" height="504" key="AVDManager/0.0.1280.689@0.0.1280.689" timestamp="1629495549934" />
   </component>
 </project>

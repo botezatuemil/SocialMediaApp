@@ -1,22 +1,28 @@
-import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useContext, useLayoutEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, SafeAreaView, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { auth, db } from '../firebase';
 import firebase from 'firebase';
 import { windowHeight, windowWidth } from '../utils/Dimensions';
+import { AuthContext } from '../navigation/AuthProvider';
+
+import { Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato';
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
 
 const ChatScreen = ({route}) => {
     
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState([]);
+    const {user, logout} = useContext(AuthContext);
 
     const sendText = async() => {
         Keyboard.dismiss();
 
         firebase.firestore();
         db.collection("chats")
-        .doc(route.params.id)
+        .doc(user.uid) 
         .collection("messages")
         .add({
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -27,11 +33,12 @@ const ChatScreen = ({route}) => {
     }
 
     useEffect(() => {
+        firebase.firestore();
         const unsubscribe = db
         .collection('chats')
-        .doc(route.params.id)
+        .doc(user.uid)
         .collection('messages')
-        .orderBy("timestamp", 'desc')
+        .orderBy("timestamp", )
         .onSnapshot((snapshot) => setMessages(
             snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -39,11 +46,17 @@ const ChatScreen = ({route}) => {
             }))
         ));
 
-        // messages.map(({id, data}) => {
-        //     console.log("data", data.textMessage)
-        // }
-        //return unsubscribe;
+        return unsubscribe;
     }, [route])
+
+    let [fontsLoaded, error] = useFonts ({
+        Lato_400Regular,
+        Lato_700Bold
+      });
+    
+    if (!fontsLoaded) {
+        return <AppLoading/>
+    }
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="position" keyboardVerticalOffset={150}>
@@ -69,7 +82,10 @@ const ChatScreen = ({route}) => {
                 </TouchableOpacity>
 
                 
-                <ScrollView>
+                <ScrollView style={styles.scroll}
+                    ref={ref => scrollView = ref }
+                    onContentSizeChange={() => scrollView.scrollToEnd({ animated: true })}
+                >
                     {messages.map(({id, data}) => 
                         data.email === auth.currentUser.email ? (
                             <View key={id} style={styles.receiver}>
@@ -78,16 +94,13 @@ const ChatScreen = ({route}) => {
                                 </Text>
                             </View>
                         ) : (
-                            <View style={styles.sender}>
-                                <Text>
+                            <View  style={styles.sender}>
+                                <Text style={styles.textSender}>
                                     {data.textMessage}
                                 </Text>
                             </View>
                         )
                     )}
-                    <View style={styles.receiver}>
-                        <Text style={styles.textReceiver}>Hey ce faci mai traiesti</Text>
-                    </View>
                 </ScrollView>
             </SafeAreaView>
         </KeyboardAvoidingView>
@@ -118,19 +131,60 @@ const styles = StyleSheet.create({
         top: 20,
     },
     receiver: {
-        //alignSelf: 'flex-end',
+        alignSelf: 'flex-end',
+        marginRight: 10,
         backgroundColor: '#003c95',
-        maxWidth: '80%',
+        maxWidth: '70%',
+        maxHeight: '70%',
         position: 'relative',
+        marginBottom: 5,
+        //height: 50,
+        justifyContent: 'center',
+        borderTopLeftRadius: 20,
+        borderBottomEndRadius: 20,
+        borderBottomStartRadius: 20,
         //top: -50,
     },
     textReceiver: {
         alignSelf: 'center',
-
+        color: '#fff',
+        marginLeft: 10,
+        marginRight: 10,
+        top: 15,
+        marginBottom: 30,
+        fontFamily: 'Lato_400Regular',
+        //textAlignVertical: 'center',
+        
     },  
     sender: {
-
-    }
+        alignSelf: 'flex-start',
+        marginRight: 10,
+        backgroundColor: '#d1d1d1',
+        maxWidth: '70%',
+        maxHeight: '70%',
+        position: 'relative',
+        marginBottom: 5,
+        justifyContent: 'center',
+        borderTopLeftRadius: 14,
+        borderBottomEndRadius: 14,
+        borderBottomStartRadius: 14,
+    },
+    textSender: {
+        alignSelf: 'center',
+        color: '#fff',
+        marginLeft: 10,
+        marginRight: 10,
+        top: 15,
+        marginBottom: 30,
+        fontFamily: 'Lato_400Regular',
+    },
+    scroll: {
+        //flex: 1,
+        top: -130,
+        marginBottom: 350,
+        height: 630,
+        
+    },
 })
 
     // const [messages, setMessages] = useState([]);

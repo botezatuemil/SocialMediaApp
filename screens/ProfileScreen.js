@@ -4,11 +4,12 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpaci
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
 import EditProfileScreen from './EditProfileScreen';
-
+import MessagesScreen from './MessagesScreen';
 import PostCard from '../components/PostCard';
 
 import { db, app } from '../firebase';
 import firebase from 'firebase';
+import { add } from 'react-native-reanimated';
 
 const ProfileScreen = ({navigation, route}) => {
     const {user, logout} = useContext(AuthContext);
@@ -99,15 +100,16 @@ const ProfileScreen = ({navigation, route}) => {
       //   });
       // }
 
-        firebase.firestore();
-        db.collection('chats')
+        await firebase.firestore();
+        await db.collection('chats')
         .doc(user.uid)
         .set({
-          userId: user.uid,
-          userName: userData.lname,
+          id: user.uid,
+          userName: userData ? userData.fname || 'User' : 'User',
           messageText: "hey i am here",
           postTime: firebase.firestore.Timestamp.fromDate(new Date()),
-          userImg: userData.userImg
+          userImg: userData ? userData.userImg || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' :
+          'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
         })
         .then(() => {
           console.log("Added chat");
@@ -116,7 +118,6 @@ const ProfileScreen = ({navigation, route}) => {
           console.log('Something went wrong', error);
         })
     } 
-    
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
